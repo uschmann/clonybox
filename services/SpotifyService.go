@@ -43,3 +43,7 @@ func (s *spotifyService) StartAuth() string {
 
 	return url
 }
+
+func (s *spotifyService) GetDevices() ([]spotify.PlayerDevice, error) {
+	return s.Client.PlayerDevices(context.Background())
+}
