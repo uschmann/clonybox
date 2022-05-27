@@ -11,7 +11,8 @@ func RegisterDeviceRoutes(r *gin.Engine, env *Env) {
 	device := r.Group("/api/device")
 	{
 		device.GET("/", env.deviceIndex)
-		device.POST("/default/:id", env.deviceDefault)
+		device.GET("/default", env.deviceGetDefault)
+		device.POST("/default/:id", env.deviceSetDefault)
 	}
 
 }
@@ -27,10 +28,15 @@ func (env *Env) deviceIndex(c *gin.Context) {
 	c.JSON(200, devices)
 }
 
-func (env *Env) deviceDefault(c *gin.Context) {
+func (env *Env) deviceSetDefault(c *gin.Context) {
+	env.Settings.Set("device.default", c.Param("id"))
+
+	c.JSON(200, map[string]interface{}{})
+}
+
+func (env *Env) deviceGetDefault(c *gin.Context) {
+	id, _ := env.Settings.Get("device.default")
 	c.JSON(200, map[string]interface{}{
-		"route":  c.FullPath(),
-		"method": c.Request.Method,
-		"id":     c.Param("id"),
+		"id": id,
 	})
 }
