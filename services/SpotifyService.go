@@ -9,23 +9,25 @@ import (
 	spotifyauth "github.com/zmb3/spotify/v2/auth"
 )
 
-type spotifyService struct {
+type SpotifyService struct {
 	Auth          *spotifyauth.Authenticator
 	ClientChannel chan *spotify.Client
 	State         string
 	Client        *spotify.Client
 }
 
-var SpotifyService *spotifyService = &spotifyService{
-	Auth: spotifyauth.New(
-		spotifyauth.WithRedirectURL("http://localhost:8080/callback"),
-		spotifyauth.WithScopes(spotifyauth.ScopeUserReadCurrentlyPlaying, spotifyauth.ScopeUserReadPlaybackState, spotifyauth.ScopeUserModifyPlaybackState),
-	),
-	ClientChannel: make(chan *spotify.Client),
-	State:         "abc123",
+func NewSpotifyService(calbackUrl string) *SpotifyService {
+	return &SpotifyService{
+		Auth: spotifyauth.New(
+			spotifyauth.WithRedirectURL(calbackUrl),
+			spotifyauth.WithScopes(spotifyauth.ScopeUserReadCurrentlyPlaying, spotifyauth.ScopeUserReadPlaybackState, spotifyauth.ScopeUserModifyPlaybackState),
+		),
+		ClientChannel: make(chan *spotify.Client),
+		State:         "abc123",
+	}
 }
 
-func (s *spotifyService) StartAuth() string {
+func (s *SpotifyService) StartAuth() string {
 	url := s.Auth.AuthURL(s.State)
 	fmt.Println("Please log in to Spotify by visiting the following page in your browser:", url)
 
@@ -44,6 +46,6 @@ func (s *spotifyService) StartAuth() string {
 	return url
 }
 
-func (s *spotifyService) GetDevices() ([]spotify.PlayerDevice, error) {
+func (s *SpotifyService) GetDevices() ([]spotify.PlayerDevice, error) {
 	return s.Client.PlayerDevices(context.Background())
 }

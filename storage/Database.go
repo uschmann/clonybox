@@ -4,22 +4,22 @@ import (
 	"fmt"
 	"log"
 
+	"github.com/uschmann/clonybox/models"
 	"gorm.io/driver/sqlite"
 	"gorm.io/gorm"
 )
 
-var Db *gorm.DB
-var err error
-
-func OpenDb(filename string) {
-	Db, err = gorm.Open(sqlite.Open(filename), &gorm.Config{})
+func OpenDb(filename string) (*gorm.DB, error) {
+	db, err := gorm.Open(sqlite.Open(filename), &gorm.Config{})
 
 	if err != nil {
 		log.Fatal(err)
-		return
+		return nil, err
 	}
 
-	Db.AutoMigrate(&Setting{})
+	db.AutoMigrate(&models.Setting{})
 
 	fmt.Println("DB opened successfully")
+
+	return db, nil
 }
