@@ -18,6 +18,7 @@ func OpenDb(filename string) (*gorm.DB, error) {
 	}
 
 	db.AutoMigrate(&models.Setting{})
+	db.AutoMigrate(&models.PlaybackConfig{})
 
 	fmt.Println("DB opened successfully")
 

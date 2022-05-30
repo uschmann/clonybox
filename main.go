@@ -7,6 +7,7 @@ import (
 
 	"github.com/gin-gonic/gin"
 	"github.com/uschmann/clonybox/handler"
+	"github.com/uschmann/clonybox/repos"
 	"github.com/uschmann/clonybox/services"
 	"github.com/uschmann/clonybox/storage"
 	"github.com/zmb3/spotify/v2"
@@ -23,15 +24,18 @@ func main() {
 	}
 
 	env := &handler.Env{
-		Db:             db,
-		SpotifyService: services.NewSpotifyService("http://localhost:8080/callback"),
-		Settings:       services.NewSettings(db),
+		Db:                 db,
+		SpotifyService:     services.NewSpotifyService("http://localhost:8080/callback"),
+		Settings:           services.NewSettings(db),
+		PlaybackConfigRepo: repos.NewPlaybackConfigRepo(db),
 	}
 
 	r := gin.Default()
 
 	handler.RegisterDeviceRoutes(r, env)
 	handler.RegisterAuthRoutes(r, env)
+	handler.RegisterPlaybackConfigRoutes(r, env)
+	handler.RegisterSpotifyHandler(r, env)
 
 	if !env.Settings.Has("spotify.token") {
 		env.SpotifyService.StartAuth()
