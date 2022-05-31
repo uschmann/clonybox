@@ -22,7 +22,7 @@ func main() {
 	rfidChannel := make(chan string)
 	broadcastService := services.NewBroadcastService(melody)
 	playbackConfigRepo := repos.NewPlaybackConfigRepo(db)
-	spotifyService := services.NewSpotifyService("http://localhost:8080/callback")
+	spotifyService := services.NewSpotifyService("http://localhost:8081/callback")
 
 	if err != nil {
 		log.Fatal(err)

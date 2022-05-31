@@ -1,4 +1,4 @@
-
+import {playbackConfigApi} from "@/api";
 
 export default {
     namespaced: true,
@@ -15,8 +15,14 @@ export default {
         }
     },
     actions: {
-        laodPlaybackConfigs() {
-            // TODO: IMplement me....
+        loadPlaybackConfigs({commit}) {
+            commit('setIsLoading', true);
+
+            return playbackConfigApi.index().then(playbackConfigs => {
+                commit('setPlaybackConfigs', playbackConfigs);
+            }).finally(() => {
+                commit('setIsLoading', false);
+            })
         }
     }
 }
