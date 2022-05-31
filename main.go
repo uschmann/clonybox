@@ -22,6 +22,7 @@ func main() {
 	rfidChannel := make(chan string)
 	broadcastService := services.NewBroadcastService(melody)
 	playbackConfigRepo := repos.NewPlaybackConfigRepo(db)
+	spotifyService := services.NewSpotifyService("http://localhost:8080/callback")
 
 	if err != nil {
 		log.Fatal(err)
@@ -30,11 +31,11 @@ func main() {
 
 	env := &handler.Env{
 		Db:                 db,
-		SpotifyService:     services.NewSpotifyService("http://localhost:8080/callback"),
+		SpotifyService:     spotifyService,
 		Settings:           settings,
 		PlaybackConfigRepo: playbackConfigRepo,
 		RfidChannel:        rfidChannel,
-		RfidObserver:       services.NewRfidObserver(rfidChannel, broadcastService, playbackConfigRepo, settings),
+		RfidObserver:       services.NewRfidObserver(rfidChannel, broadcastService, playbackConfigRepo, settings, spotifyService),
 		BroadcastService:   broadcastService,
 	}
 
@@ -49,19 +50,9 @@ func main() {
 	handler.RegisterPlaybackConfigRoutes(r, env)
 	handler.RegisterSpotifyHandler(r, env)
 
-	r.GET("/ws", func(c *gin.Context) {
+	r.GET("/api/ws", func(c *gin.Context) {
 		melody.HandleRequest(c.Writer, c.Request)
 	})
-
-	/*
-		go func() {
-			for rfid := range env.RfidChannel {
-				env.BroadcastService.Broadcast("rfid.scanned", &map[string]interface{}{
-					"rfid": rfid,
-				})
-			}
-		}()
-	*/
 
 	if !env.Settings.Has("spotify.token") {
 		env.SpotifyService.StartAuth()

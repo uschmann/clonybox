@@ -1,0 +1,31 @@
+<template>
+  <v-menu>
+    <template #activator="{on}">
+      <v-btn icon v-on="on">
+        <v-icon>
+          {{icon}}
+        </v-icon>
+      </v-btn>
+    </template>
+    <v-list>
+      <slot>
+      </slot>
+    </v-list>
+  </v-menu>
+</template>
+
+<script>
+export default {
+  name: "ActionMenu",
+  props: {
+    icon: {
+      type: String,
+      default: 'mdi-dots-vertical'
+    }
+  }
+}
+</script>
+
+<style scoped>
+
+</style>
