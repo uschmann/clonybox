@@ -1,5 +1,5 @@
 <template>
-  <v-list-item>
+  <v-list-item :to="to">
     <v-list-item-icon>
       <v-icon>
         {{icon}}
@@ -20,6 +20,9 @@ export default {
     },
     title: {
       type: String
+    },
+    to: {
+      type: Object
     }
   }
 }

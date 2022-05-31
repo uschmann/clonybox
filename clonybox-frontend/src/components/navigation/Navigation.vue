@@ -1,9 +1,11 @@
 <template>
   <v-list>
     <NavigationItem icon="mdi-speaker-wireless"
-                    title="Spotify devices"/>
+                    title="Spotify devices"
+                    :to="{name: 'device'}"/>
     <NavigationItem icon="mdi-playlist-music"
-                    title="Playback configuration"/>
+                    title="Playback configuration"
+                    :to="{name: 'playbackConfig'}"/>
   </v-list>
 </template>
 
