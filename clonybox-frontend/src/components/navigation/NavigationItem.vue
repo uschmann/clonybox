@@ -1,5 +1,5 @@
 <template>
-  <v-list-item :to="to">
+  <v-list-item :to="to" v-bind="$attrs">
     <v-list-item-icon>
       <v-icon>
         {{icon}}

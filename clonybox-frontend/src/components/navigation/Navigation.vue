@@ -13,6 +13,7 @@
 
     <v-list>
       <NavigationItem icon="mdi-home"
+                      exact
                       title="Home"
                       :to="{name: 'home'}"/>
       <NavigationItem icon="mdi-speaker-wireless"

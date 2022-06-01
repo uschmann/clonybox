@@ -2,7 +2,7 @@
   <v-container fluid>
     <v-row>
       <v-col class="text-center pt-16">
-        <v-icon size="64" color="green">
+        <v-icon size="64" color="green" class="mb-5">
           mdi-spotify
         </v-icon>
         <h2 class="font-weight-light" style="line-height: 0.9em">

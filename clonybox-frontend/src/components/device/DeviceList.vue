@@ -17,7 +17,8 @@
         </v-list-item-content>
         <v-list-item-action>
           <ActionMenu>
-            <ActionMenuItem label="Anzeigen"
+            <ActionMenuItem label="Set as default"
+                            @click="setAsDefault(device)"
                             icon="mdi-eye"/>
           </ActionMenu>
         </v-list-item-action>
@@ -27,6 +28,7 @@
 </template>
 
 <script>
+import {deviceApi} from "@/api";
 import {mapState} from 'vuex'
 import ToolbarCard from "@/components/utils/ToolbarCard";
 import ActionMenu from "@/components/utils/ActionMenu";
@@ -47,6 +49,11 @@ export default {
     ...mapState('device/list', [
         'devices'
     ])
+  },
+  methods: {
+    setAsDefault(device) {
+      deviceApi.setDefault(device.id)
+    }
   }
 }
 </script>

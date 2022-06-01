@@ -4,6 +4,7 @@ import (
 	"log"
 
 	"github.com/gin-gonic/gin"
+	"github.com/zmb3/spotify/v2"
 )
 
 func RegisterDeviceRoutes(r *gin.Engine, env *Env) {
@@ -30,8 +31,18 @@ func (env *Env) deviceIndex(c *gin.Context) {
 
 func (env *Env) deviceSetDefault(c *gin.Context) {
 	env.Settings.Set("device.default", c.Param("id"))
+	devices, _ := env.SpotifyService.GetDevices()
+	var defaultDevice spotify.PlayerDevice
 
-	c.JSON(200, map[string]interface{}{})
+	for _, d := range devices {
+		if d.ID.String() == c.Param("id") {
+			env.Settings.Set("device.default.json", c.Param("id"))
+			defaultDevice = d
+			break
+		}
+	}
+
+	c.JSON(200, defaultDevice)
 }
 
 func (env *Env) deviceGetDefault(c *gin.Context) {
