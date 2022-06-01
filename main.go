@@ -2,8 +2,11 @@ package main
 
 import (
 	"context"
+	"embed"
 	"encoding/json"
+	"io/fs"
 	"log"
+	"net/http"
 
 	"github.com/gin-gonic/gin"
 	"github.com/uschmann/clonybox/handler"
@@ -15,6 +18,20 @@ import (
 	"golang.org/x/oauth2"
 	"gopkg.in/olahol/melody.v1"
 )
+
+//go:embed clonybox-frontend/dist/*
+var res embed.FS
+
+func serveStaticFiles(r *gin.Engine) {
+	// Serve static embeded files
+	r.GET("/", func(c *gin.Context) {
+		c.FileFromFS("/clonybox-frontend/dist/index.htm", http.FS(res))
+	})
+	js, _ := fs.Sub(res, "clonybox-frontend/dist/js")
+	r.StaticFS("/js", http.FS(js))
+	css, _ := fs.Sub(res, "clonybox-frontend/dist/css")
+	r.StaticFS("/css", http.FS(css))
+}
 
 func main() {
 	db, err := storage.OpenDb("test.db")
@@ -40,11 +57,13 @@ func main() {
 		BroadcastService:   broadcastService,
 	}
 
-	rfidReader := rfidreader.NewEvdevRfIdReader("/dev/input/event20")
+	rfidReader := rfidreader.NewStdioRfidReader() //"/dev/input/event20"
 	go rfidReader.StartReading(env.RfidChannel)
 	go env.RfidObserver.Observe()
 
 	r := gin.Default()
+
+	serveStaticFiles(r)
 
 	handler.RegisterDeviceRoutes(r, env)
 	handler.RegisterAuthRoutes(r, env)
