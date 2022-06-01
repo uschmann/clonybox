@@ -9,6 +9,7 @@ import (
 	"github.com/uschmann/clonybox/handler"
 	"github.com/uschmann/clonybox/repos"
 	"github.com/uschmann/clonybox/services"
+	rfidreader "github.com/uschmann/clonybox/services/rfidReader"
 	"github.com/uschmann/clonybox/storage"
 	"github.com/zmb3/spotify/v2"
 	"golang.org/x/oauth2"
@@ -39,7 +40,7 @@ func main() {
 		BroadcastService:   broadcastService,
 	}
 
-	rfidReader := services.NewRfidReader()
+	rfidReader := rfidreader.NewEvdevRfIdReader("/dev/input/event20")
 	go rfidReader.StartReading(env.RfidChannel)
 	go env.RfidObserver.Observe()
 

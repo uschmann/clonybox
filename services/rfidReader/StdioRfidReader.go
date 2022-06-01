@@ -1,4 +1,4 @@
-package services
+package rfidreader
 
 import (
 	"bufio"
@@ -6,17 +6,17 @@ import (
 	"strings"
 )
 
-type RfidReader struct {
+type StdioRfidReader struct {
 	reader *bufio.Reader
 }
 
-func NewRfidReader() *RfidReader {
-	return &RfidReader{
+func NewStdioRfidReader() *StdioRfidReader {
+	return &StdioRfidReader{
 		reader: bufio.NewReader(os.Stdin),
 	}
 }
 
-func (r *RfidReader) StartReading(ch chan string) {
+func (r *StdioRfidReader) StartReading(ch chan string) {
 	for {
 		text, _ := r.reader.ReadString('\n')
 		ch <- strings.ReplaceAll(text, "\n", "")
