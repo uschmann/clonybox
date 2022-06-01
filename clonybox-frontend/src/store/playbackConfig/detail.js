@@ -12,7 +12,7 @@ export default {
     },
     actions: {
         assignFromSpotifyUri({commit, state}) {
-
+                
         }
     }
 }

@@ -22,7 +22,9 @@ export default {
   },
   methods: {
     searchSpotifyItem() {
-      this.$refs.spotifyDialog.open();
+      this.$refs.spotifyDialog.open().then(selection => {
+        console.log(selection)
+      });
     }
   }
 }
