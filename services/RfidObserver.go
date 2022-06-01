@@ -70,8 +70,6 @@ func (r *RfidObserver) Observe() {
 							fmt.Println(error)
 						}
 					}
-
-					r.SpotifyService.Client.TransferPlayback(context.Background(), deviceId, true)
 				}
 			} else {
 				r.BroadcastService.Broadcast("playback_config.scanned", &BroadcastEvent{

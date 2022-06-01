@@ -1,11 +1,13 @@
+import router from "@/router";
+
 const websocket = new WebSocket("ws://localhost:8080/api/ws")
 
 websocket.onmessage = function (event) {
-    broadcastEvent = JSON.parse(event.data);
+    const broadcastEvent = JSON.parse(event.data);
 
     switch (broadcastEvent.type) {
         case "playback_config.scanned":
-            console.log("Scanned!", broadcastEvent.data.playback_config)
+            router.push({name: 'playbackConfig.detail', params: {id: broadcastEvent.data.playback_config.id}})
             break;
     }
 }

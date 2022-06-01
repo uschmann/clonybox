@@ -18,8 +18,16 @@ func RegisterPlaybackConfigRoutes(r *gin.Engine, env *Env) {
 	{
 		group.GET("/", env.indexPlaybackConfigs)
 		group.POST("/", env.storePlaybackConfig)
+		group.GET("/:id", env.showPlaybackConfig)
 		group.PUT("/:id", env.updatePlaybackConfig)
 	}
+}
+
+func (env *Env) showPlaybackConfig(c *gin.Context) {
+	id, _ := strconv.Atoi(c.Param("id"))
+	playbackConfig := env.PlaybackConfigRepo.GetPlaybackConfigById(id)
+
+	c.JSON(200, playbackConfig)
 }
 
 func (env *Env) indexPlaybackConfigs(c *gin.Context) {

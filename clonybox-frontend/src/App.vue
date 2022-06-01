@@ -1,6 +1,6 @@
 <template>
   <v-app>
-    <v-navigation-drawer v-model="drawer" clipped app>
+    <v-navigation-drawer v-model="drawer" app>
       <Navigation/>
     </v-navigation-drawer>
 

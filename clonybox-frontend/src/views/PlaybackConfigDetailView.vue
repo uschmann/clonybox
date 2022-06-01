@@ -1,31 +1,44 @@
 <template>
   <v-container fluid>
-    <v-row>
-      <v-col>
-        <h1>Details</h1>
-        <v-btn @click="searchSpotifyItem">
-          search
-        </v-btn>
-      </v-col>
-    </v-row>
-    <SpotifySearchDialog ref="spotifyDialog"/>
+    <template v-if="playbackConfig !== null && !isLoading">
+      <v-row>
+        <v-col>
+          <PlaybackConfigInfo/>
+        </v-col>
+        <v-col>
+          <AssignSpotifyItem/>
+        </v-col>
+      </v-row>
+    </template>
   </v-container>
 </template>
 
 <script>
+import {mapState, mapActions, mapMutations} from 'vuex'
 import SpotifySearchDialog from "@/components/spotify/SpotifySearchDialog";
+import AssignSpotifyItem from "@/components/playbackConfig/AssignSpotifyItem";
+import PlaybackConfigInfo from "@/components/playbackConfig/PlaybackConfigInfo";
 
 export default {
   name: "PlaybackConfigDetailView",
   components: {
-    SpotifySearchDialog
+    PlaybackConfigInfo,
+    SpotifySearchDialog,
+    AssignSpotifyItem
+  },
+  computed: {
+    ...mapState('playbackConfig/detail', [
+      'playbackConfig',
+      'isLoading',
+    ])
   },
   methods: {
-    searchSpotifyItem() {
-      this.$refs.spotifyDialog.open().then(selection => {
-        console.log(selection)
-      });
-    }
+    ...mapActions('playbackConfig/detail', [
+      'loadPlaybackConfig',
+    ])
+  },
+  mounted() {
+    this.loadPlaybackConfig(this.$route.params.id);
   }
 }
 </script>
