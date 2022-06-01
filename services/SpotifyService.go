@@ -14,9 +14,10 @@ type SpotifyService struct {
 	ClientChannel chan *spotify.Client
 	State         string
 	Client        *spotify.Client
+	Settings      *Settings
 }
 
-func NewSpotifyService(calbackUrl string) *SpotifyService {
+func NewSpotifyService(calbackUrl string, settings *Settings) *SpotifyService {
 	return &SpotifyService{
 		Auth: spotifyauth.New(
 			spotifyauth.WithRedirectURL(calbackUrl),
@@ -48,4 +49,12 @@ func (s *SpotifyService) StartAuth() string {
 
 func (s *SpotifyService) GetDevices() ([]spotify.PlayerDevice, error) {
 	return s.Client.PlayerDevices(context.Background())
+}
+
+func (s *SpotifyService) GetAuthUrl() string {
+	return s.Auth.AuthURL(s.State)
+}
+
+func (s *SpotifyService) GetUser() (*spotify.PrivateUser, error) {
+	return s.Client.CurrentUser(context.Background())
 }

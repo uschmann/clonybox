@@ -12,6 +12,9 @@
     <v-divider></v-divider>
 
     <v-list>
+      <NavigationItem icon="mdi-home"
+                      title="Home"
+                      :to="{name: 'home'}"/>
       <NavigationItem icon="mdi-speaker-wireless"
                       title="Spotify devices"
                       :to="{name: 'device'}"/>

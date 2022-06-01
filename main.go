@@ -23,7 +23,7 @@ func main() {
 	rfidChannel := make(chan string)
 	broadcastService := services.NewBroadcastService(melody)
 	playbackConfigRepo := repos.NewPlaybackConfigRepo(db)
-	spotifyService := services.NewSpotifyService("http://localhost:8081/callback")
+	spotifyService := services.NewSpotifyService("http://localhost:8081/callback", settings)
 
 	if err != nil {
 		log.Fatal(err)
@@ -50,6 +50,7 @@ func main() {
 	handler.RegisterAuthRoutes(r, env)
 	handler.RegisterPlaybackConfigRoutes(r, env)
 	handler.RegisterSpotifyHandler(r, env)
+	handler.RegisterInfoHandler(r, env)
 
 	r.GET("/api/ws", func(c *gin.Context) {
 		melody.HandleRequest(c.Writer, c.Request)

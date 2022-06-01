@@ -33,7 +33,7 @@ func RegisterAuthRoutes(r *gin.Engine, env *Env) {
 		client := spotify.New(env.SpotifyService.Auth.Client(r.Context(), tok))
 		env.SpotifyService.ClientChannel <- client
 
-		c.String(200, "Login complete!!!!!")
+		c.Redirect(http.StatusFound, "http://localhost:8080")
 	})
 
 }
