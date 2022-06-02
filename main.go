@@ -84,5 +84,5 @@ func main() {
 		env.SpotifyService.Client = spotify.New(env.SpotifyService.Auth.Client(context.Background(), &token))
 	}
 
-	r.Run("localhost:8081")
+	r.Run("0.0.0.0:8081")
 }
