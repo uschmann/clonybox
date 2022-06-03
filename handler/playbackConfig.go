@@ -20,7 +20,15 @@ func RegisterPlaybackConfigRoutes(r *gin.Engine, env *Env) {
 		group.POST("/", env.storePlaybackConfig)
 		group.GET("/:id", env.showPlaybackConfig)
 		group.PUT("/:id", env.updatePlaybackConfig)
+		group.DELETE("/:id", env.deletePlaybackConfig)
 	}
+}
+
+func (env *Env) deletePlaybackConfig(c *gin.Context) {
+	id, _ := strconv.Atoi(c.Param("id"))
+	playbackConfig := env.PlaybackConfigRepo.DeletePlaybackConfigById(id)
+
+	c.JSON(200, playbackConfig)
 }
 
 func (env *Env) showPlaybackConfig(c *gin.Context) {

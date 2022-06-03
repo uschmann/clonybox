@@ -14,7 +14,7 @@
         <SpotifyListItem :key="'playbackconfig-' + playbackConfig.id"
                          v-if="playbackConfig.metadata"
                          :type="playbackConfig.type"
-                         :item="playbackConfig.metadata"
+                         :item="playbackConfig"
                          :to="{name: 'playbackConfig.detail', params: {id: playbackConfig.id}}"/>
         <v-list-item :key="'playbackconfig-' + playbackConfig.id"
                      v-else
@@ -32,6 +32,13 @@
               RFID: {{ playbackConfig.rfid }}
             </v-list-item-subtitle>
           </v-list-item-content>
+          <v-list-item-action>
+            <ActionMenu>
+              <ActionMenuItem label="Löschen"
+                              icon="mdi-trash-can"
+                              @click="deletePlaybackConfig(playbackConfig)"/>
+            </ActionMenu>
+          </v-list-item-action>
         </v-list-item>
       </template>
     </v-list>
@@ -42,12 +49,16 @@
 import {mapState, mapActions} from 'vuex'
 import ToolbarCard from "@/components/utils/ToolbarCard";
 import SpotifyListItem from "@/components/spotify/SpotifyListItem";
+import ActionMenuItem from "@/components/utils/ActionMenuItem";
+import ActionMenu from "@/components/utils/ActionMenu";
 
 export default {
   name: "PlaybackConfigList",
   components: {
     ToolbarCard,
-    SpotifyListItem
+    SpotifyListItem,
+    ActionMenu,
+    ActionMenuItem
   },
   computed: {
     ...mapState('playbackConfig/list', [
@@ -57,7 +68,8 @@ export default {
   },
   methods: {
     ...mapActions('playbackConfig/list', [
-        'loadPlaybackConfigs'
+        'loadPlaybackConfigs',
+        'deletePlaybackConfig'
     ])
   }
 }

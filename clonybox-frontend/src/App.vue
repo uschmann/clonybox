@@ -17,6 +17,8 @@
         <v-main>
           <router-view v-if="!isLoadingInfo"/>
         </v-main>
+
+        <NotificationSnackbar/>
       </template>
       <template v-else>
         <div class="fill-height d-flex justify-center align-center">
@@ -46,11 +48,13 @@
 <script>
 import {mapState, mapActions} from 'vuex'
 import Navigation from "@/components/navigation/Navigation";
+import NotificationSnackbar from "@/components/utils/NotificationSnackbar";
 
 export default {
   name: 'App',
   components: {
-    Navigation
+    Navigation,
+    NotificationSnackbar
   },
   computed: {
     ...mapState([

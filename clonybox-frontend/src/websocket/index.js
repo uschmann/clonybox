@@ -1,4 +1,5 @@
 import router from "@/router";
+import notification from "@/utils/notification";
 
 
 const url = `ws://${location.host}/api/ws`
@@ -9,6 +10,7 @@ websocket.onmessage = function (event) {
 
     switch (broadcastEvent.type) {
         case "playback_config.scanned":
+            notification.info(broadcastEvent.data.playback_config.rfid + ' was scanned');
             router.push({name: 'playbackConfig.detail', params: {id: broadcastEvent.data.playback_config.id}})
             break;
     }

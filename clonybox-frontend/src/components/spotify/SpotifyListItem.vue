@@ -5,18 +5,33 @@
     </v-list-item-avatar>
     <v-list-item-content>
       <v-list-item-title>
-        {{ item.name }}
+        {{ item.metadata.name }}
       </v-list-item-title>
       <v-list-item-subtitle>
         {{ subtitle }}
       </v-list-item-subtitle>
     </v-list-item-content>
+    <v-list-item-action>
+      <ActionMenu>
+        <ActionMenuItem label="Löschen"
+                        icon="mdi-trash-can"
+                        @click="deletePlaybackConfig(item)"/>
+      </ActionMenu>
+    </v-list-item-action>
   </v-list-item>
 </template>
 
 <script>
+import {mapActions} from 'vuex'
+import ActionMenu from "@/components/utils/ActionMenu";
+import ActionMenuItem from "@/components/utils/ActionMenuItem";
+
 export default {
   name: "SpotifyListItem",
+  components: {
+    ActionMenu,
+    ActionMenuItem
+  },
   props: {
     item: {
       type: Object,
@@ -27,23 +42,28 @@ export default {
       required: true
     }
   },
+  methods: {
+      ...mapActions('playbackConfig/list', [
+          'deletePlaybackConfig'
+      ])
+  },
   computed: {
     imageUrl() {
       switch (this.type) {
         case "album":
         case "playlist":
-          return this.item.images[0].url;
+          return this.item.metadata.images[0].url;
         case "track":
-          return this.item.album.images[0].url;
+          return this.item.metadata.album.images[0].url;
       }
     },
     subtitle() {
       switch (this.type) {
         case "album":
         case "track":
-          return this.item.artists[0].name;
+          return this.item.metadata.artists[0].name;
         case "playlist":
-          return `From: ${this.item.owner.display_name} | ${this.item.tracks.total} tracks`;
+          return `From: ${this.item.metadata.owner.display_name} | ${this.item.metadata.tracks.total} tracks`;
       }
     }
   }

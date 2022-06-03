@@ -85,3 +85,12 @@ func (p *PlaybackConfigRepo) GetPlaybackConfigById(id int) *models.PlaybackConfi
 func (p *PlaybackConfigRepo) UpdatePlaybackConfig(playbackConfig *models.PlaybackConfig) {
 	p.Db.Save(playbackConfig)
 }
+
+func (p *PlaybackConfigRepo) DeletePlaybackConfigById(id int) *models.PlaybackConfig {
+	playbackConfig := &models.PlaybackConfig{}
+
+	p.Db.Where("id = ?", id).First(playbackConfig)
+	p.Db.Delete(playbackConfig)
+
+	return playbackConfig
+}

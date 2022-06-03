@@ -9,6 +9,7 @@ import (
 	"log"
 	"net/http"
 	"os"
+	"time"
 
 	"github.com/gin-gonic/gin"
 	"github.com/joho/godotenv"
@@ -96,6 +97,8 @@ func main() {
 		melody.HandleRequest(c.Writer, c.Request)
 	})
 
+	// Authenticate spotify client
+
 	if !env.Settings.Has("spotify.token") {
 		env.SpotifyService.StartAuth()
 	} else {
@@ -103,8 +106,34 @@ func main() {
 		var token oauth2.Token
 		json.Unmarshal([]byte(tokenJson), &token)
 		env.SpotifyService.Client = spotify.New(env.SpotifyService.Auth.Client(context.Background(), &token))
+
+		fmt.Println("Token expires: ", token.Expiry)
 	}
 
+	go func() {
+		for {
+			time.Sleep(20 * time.Minute)
+			if env.SpotifyService.Client != nil {
+				env.SpotifyService.GetUser()
+				token, err := env.SpotifyService.Client.Token()
+
+				fmt.Println(token.Expiry)
+
+				if err != nil {
+					fmt.Println(err)
+				}
+
+				tokenJson, err := json.Marshal(token)
+				if err != nil {
+					fmt.Println(err)
+				}
+
+				env.Settings.Set("spotify.token", string(tokenJson))
+			}
+		}
+	}()
+
+	// Start server
 	r.Run()
 }
 

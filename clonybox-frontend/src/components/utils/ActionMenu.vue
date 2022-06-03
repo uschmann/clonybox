@@ -1,7 +1,7 @@
 <template>
-  <v-menu>
+  <v-menu v-on="$listeners">
     <template #activator="{on}">
-      <v-btn icon v-on="on">
+      <v-btn icon v-on="on" @click.stop.prevent>
         <v-icon>
           {{icon}}
         </v-icon>
