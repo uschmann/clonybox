@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"log"
 	"net/http"
+	"os"
 
 	"github.com/gin-gonic/gin"
 	"github.com/zmb3/spotify/v2"
@@ -33,7 +34,17 @@ func RegisterAuthRoutes(r *gin.Engine, env *Env) {
 		client := spotify.New(env.SpotifyService.Auth.Client(r.Context(), tok))
 		env.SpotifyService.ClientChannel <- client
 
-		c.Redirect(http.StatusFound, "http://localhost:8080")
+		c.Redirect(http.StatusFound, getRedirectUrl())
 	})
 
+}
+
+func getRedirectUrl() string {
+	port := os.Getenv("PORT")
+
+	if port == "" || port == "80" {
+		return "http://" + os.Getenv("HOST")
+	}
+
+	return "http://" + os.Getenv("HOST") + ":" + port
 }

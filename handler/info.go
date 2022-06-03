@@ -1,6 +1,8 @@
 package handler
 
 import (
+	"fmt"
+
 	"github.com/gin-gonic/gin"
 	"github.com/zmb3/spotify/v2"
 )
@@ -18,11 +20,19 @@ func (env *Env) indexInfo(c *gin.Context) {
 	var devices []spotify.PlayerDevice
 
 	if authenticated {
-		u, _ := env.SpotifyService.GetUser()
+		u, err := env.SpotifyService.GetUser()
 		user = u
 
-		d, _ := env.SpotifyService.GetDevices()
+		if err != nil {
+			fmt.Println(err)
+		}
+
+		d, err := env.SpotifyService.GetDevices()
 		devices = d
+
+		if err != nil {
+			fmt.Println(err)
+		}
 	}
 
 	c.JSON(200, gin.H{

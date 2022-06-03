@@ -4,11 +4,14 @@ import (
 	"context"
 	"embed"
 	"encoding/json"
+	"fmt"
 	"io/fs"
 	"log"
 	"net/http"
+	"os"
 
 	"github.com/gin-gonic/gin"
+	"github.com/joho/godotenv"
 	"github.com/uschmann/clonybox/handler"
 	"github.com/uschmann/clonybox/repos"
 	"github.com/uschmann/clonybox/services"
@@ -33,14 +36,32 @@ func serveStaticFiles(r *gin.Engine) {
 	r.StaticFS("/css", http.FS(css))
 }
 
+func getCallbackUrl() string {
+	port := os.Getenv("PORT")
+
+	if port == "" || port == "80" {
+		return "http://" + os.Getenv("HOST") + "/callback"
+	}
+
+	return "http://" + os.Getenv("HOST") + ":" + port + "/callback"
+}
+
 func main() {
+	err := godotenv.Load(".env")
+
+	if err != nil {
+		fmt.Println("Error loading .env file")
+	}
+
 	db, err := storage.OpenDb("test.db")
 	melody := melody.New()
 	settings := services.NewSettings(db)
 	rfidChannel := make(chan string)
 	broadcastService := services.NewBroadcastService(melody)
 	playbackConfigRepo := repos.NewPlaybackConfigRepo(db)
-	spotifyService := services.NewSpotifyService("http://localhost:8081/callback", settings)
+
+	callbackUrl := getCallbackUrl()
+	spotifyService := services.NewSpotifyService(callbackUrl, settings)
 
 	if err != nil {
 		log.Fatal(err)
@@ -57,7 +78,7 @@ func main() {
 		BroadcastService:   broadcastService,
 	}
 
-	rfidReader := rfidreader.NewStdioRfidReader() //"/dev/input/event20"
+	var rfidReader rfidreader.RfidReader = createRfIdReader(os.Getenv("RFID_TYPE")) //"/dev/input/event20"
 	go rfidReader.StartReading(env.RfidChannel)
 	go env.RfidObserver.Observe()
 
@@ -84,5 +105,14 @@ func main() {
 		env.SpotifyService.Client = spotify.New(env.SpotifyService.Auth.Client(context.Background(), &token))
 	}
 
-	r.Run("0.0.0.0:8081")
+	r.Run()
+}
+
+func createRfIdReader(readerType string) rfidreader.RfidReader {
+	switch readerType {
+	case "evdev":
+		return rfidreader.NewEvdevRfIdReader(os.Getenv("RFID_EVDEV_FILE"))
+	}
+
+	return rfidreader.NewStdioRfidReader()
 }

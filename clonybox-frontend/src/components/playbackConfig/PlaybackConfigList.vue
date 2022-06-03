@@ -1,5 +1,14 @@
 <template>
   <ToolbarCard title="Playback configurations">
+    <template #toolbar-items>
+      <v-btn icon
+             :loading="isLoading"
+             @click="loadPlaybackConfigs">
+        <v-icon>
+          mdi-refresh
+        </v-icon>
+      </v-btn>
+    </template>
     <v-list>
       <template v-for="playbackConfig in playbackConfigs">
         <SpotifyListItem :key="'playbackconfig-' + playbackConfig.id"
@@ -30,7 +39,7 @@
 </template>
 
 <script>
-import {mapState} from 'vuex'
+import {mapState, mapActions} from 'vuex'
 import ToolbarCard from "@/components/utils/ToolbarCard";
 import SpotifyListItem from "@/components/spotify/SpotifyListItem";
 
@@ -42,7 +51,13 @@ export default {
   },
   computed: {
     ...mapState('playbackConfig/list', [
-      'playbackConfigs'
+      'playbackConfigs',
+      'isLoading',
+    ])
+  },
+  methods: {
+    ...mapActions('playbackConfig/list', [
+        'loadPlaybackConfigs'
     ])
   }
 }

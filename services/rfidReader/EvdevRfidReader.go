@@ -78,13 +78,3 @@ func (r *EvdevRfIdReader) readString() string {
 		}
 	}
 }
-
-func main() {
-
-	reader := NewEvdevRfIdReader("/dev/input/event20")
-	fmt.Println(reader)
-
-	fmt.Printf("Testing ... (interrupt to exit)\n")
-
-	fmt.Println(reader.readString())
-}

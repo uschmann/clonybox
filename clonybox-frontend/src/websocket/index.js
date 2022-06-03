@@ -1,6 +1,8 @@
 import router from "@/router";
 
-const websocket = new WebSocket("ws://localhost:8080/api/ws")
+
+const url = `ws://${location.host}/api/ws`
+const websocket = new WebSocket(url)
 
 websocket.onmessage = function (event) {
     const broadcastEvent = JSON.parse(event.data);

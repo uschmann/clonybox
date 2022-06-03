@@ -1,5 +1,14 @@
 <template>
   <ToolbarCard title="Spotify devices">
+    <template #toolbar-items>
+      <v-btn icon
+             :loading="isLoading"
+             @click="loadDevices">
+        <v-icon>
+          mdi-refresh
+        </v-icon>
+      </v-btn>
+    </template>
     <v-list>
       <v-list-item v-for="device in devices" :key="'device-' + device.id">
         <v-list-item-icon>
@@ -29,7 +38,7 @@
 
 <script>
 import {deviceApi} from "@/api";
-import {mapState} from 'vuex'
+import {mapState, mapActions} from 'vuex'
 import ToolbarCard from "@/components/utils/ToolbarCard";
 import ActionMenu from "@/components/utils/ActionMenu";
 import ActionMenuItem from "@/components/utils/ActionMenuItem";
@@ -47,10 +56,14 @@ export default {
   },
   computed: {
     ...mapState('device/list', [
-        'devices'
+        'devices',
+        'isLoading'
     ])
   },
   methods: {
+    ...mapActions('device/list', [
+         'loadDevices'
+    ]),
     setAsDefault(device) {
       deviceApi.setDefault(device.id)
     }
