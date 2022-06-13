@@ -16,9 +16,10 @@ func NewStdioRfidReader() *StdioRfidReader {
 	}
 }
 
-func (r *StdioRfidReader) StartReading(ch chan string) {
+func (r *StdioRfidReader) StartReading(ch chan RfidEvent) {
 	for {
 		text, _ := r.reader.ReadString('\n')
-		ch <- strings.ReplaceAll(text, "\n", "")
+		rfid := strings.ReplaceAll(text, "\n", "")
+		ch <- RfidEvent{Type: EVENT_SCANNED, Rfid: rfid}
 	}
 }

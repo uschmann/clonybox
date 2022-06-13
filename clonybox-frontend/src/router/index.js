@@ -4,6 +4,7 @@ import HomeView from '../views/HomeView.vue'
 import DeviceView from "@/views/DeviceView";
 import PlaybackConfigView from "@/views/PlaybackConfigView";
 import PlaybackConfigDetailView from "@/views/PlaybackConfigDetailView";
+import SettingsView from "@/views/SettingsView";
 
 Vue.use(VueRouter)
 
@@ -27,6 +28,11 @@ const routes = [
     path: '/playback-config/:id',
     name: 'playbackConfig.detail',
     component: PlaybackConfigDetailView
+  },
+  {
+    path: '/settings',
+    name: 'settings',
+    component: SettingsView
   },
 ]
 

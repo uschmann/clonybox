@@ -22,6 +22,9 @@
       <NavigationItem icon="mdi-playlist-music"
                       title="Playback configuration"
                       :to="{name: 'playbackConfig'}"/>
+      <NavigationItem icon="mdi-cog"
+                      title="Settings"
+                      :to="{name: 'settings'}"/>
     </v-list>
   </div>
 </template>

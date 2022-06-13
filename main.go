@@ -13,6 +13,7 @@ import (
 
 	"github.com/gin-gonic/gin"
 	"github.com/joho/godotenv"
+	"github.com/uschmann/clonybox/config"
 	"github.com/uschmann/clonybox/handler"
 	"github.com/uschmann/clonybox/repos"
 	"github.com/uschmann/clonybox/services"
@@ -54,10 +55,11 @@ func main() {
 		fmt.Println("Error loading .env file")
 	}
 
-	db, err := storage.OpenDb("test.db")
+	config := config.FromEnv()
+	db, err := storage.OpenDb(config.DatabaseFile)
 	melody := melody.New()
 	settings := services.NewSettings(db)
-	rfidChannel := make(chan string)
+	rfidChannel := make(chan rfidreader.RfidEvent)
 	broadcastService := services.NewBroadcastService(melody)
 	playbackConfigRepo := repos.NewPlaybackConfigRepo(db)
 
@@ -77,6 +79,7 @@ func main() {
 		RfidChannel:        rfidChannel,
 		RfidObserver:       services.NewRfidObserver(rfidChannel, broadcastService, playbackConfigRepo, settings, spotifyService),
 		BroadcastService:   broadcastService,
+		Config:             config,
 	}
 
 	var rfidReader rfidreader.RfidReader = createRfIdReader(os.Getenv("RFID_TYPE")) //"/dev/input/event20"
@@ -92,6 +95,7 @@ func main() {
 	handler.RegisterPlaybackConfigRoutes(r, env)
 	handler.RegisterSpotifyHandler(r, env)
 	handler.RegisterInfoHandler(r, env)
+	handler.RegisterSettingsHandler(r, env)
 
 	r.GET("/api/ws", func(c *gin.Context) {
 		melody.HandleRequest(c.Writer, c.Request)

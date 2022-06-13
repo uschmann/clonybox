@@ -7,6 +7,7 @@ import device from "./device"
 import playbackConfig from "./playbackConfig"
 import spotify from "./spotify"
 import auth from "./auth"
+import settings from "./settings"
 
 Vue.use(Vuex)
 
@@ -40,6 +41,7 @@ export default new Vuex.Store({
     device,
     playbackConfig,
     spotify,
-    auth
+    auth,
+    settings
   }
 })

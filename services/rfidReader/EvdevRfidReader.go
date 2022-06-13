@@ -53,9 +53,10 @@ func NewEvdevRfIdReader(filename string) *EvdevRfIdReader {
 	}
 }
 
-func (r *EvdevRfIdReader) StartReading(ch chan string) {
+func (r *EvdevRfIdReader) StartReading(ch chan RfidEvent) {
 	for {
-		ch <- r.readString()
+		rfid := r.readString()
+		ch <- RfidEvent{Type: EVENT_SCANNED, Rfid: rfid}
 	}
 }
 
