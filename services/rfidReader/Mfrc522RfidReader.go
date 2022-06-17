@@ -81,13 +81,13 @@ func (m *Mfrc522RfidReader) StartReading(ch chan RfidEvent) {
 		if err == nil {
 			rfid := hex.EncodeToString(data)
 
-			if rfid != m.lastRfid {
-				m.lastRfid = rfid
-				ch <- RfidEvent{
-					Type: "scanned",
-					Rfid: rfid,
-				}
+			m.lastRfid = rfid
+			ch <- RfidEvent{
+				Type: "scanned",
+				Rfid: rfid,
 			}
+
+			time.Sleep(3 * time.Second)
 		}
 	}
 }
