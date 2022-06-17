@@ -66,6 +66,8 @@ func main() {
 	callbackUrl := getCallbackUrl()
 	spotifyService := services.NewSpotifyService(callbackUrl, settings)
 
+	audioPlayer := services.NewAudioPlayer(settings, spotifyService)
+
 	if err != nil {
 		log.Fatal(err)
 		return
@@ -77,7 +79,7 @@ func main() {
 		Settings:           settings,
 		PlaybackConfigRepo: playbackConfigRepo,
 		RfidChannel:        rfidChannel,
-		RfidObserver:       services.NewRfidObserver(rfidChannel, broadcastService, playbackConfigRepo, settings, spotifyService),
+		RfidObserver:       services.NewRfidObserver(rfidChannel, broadcastService, playbackConfigRepo, settings, spotifyService, audioPlayer),
 		BroadcastService:   broadcastService,
 		Config:             config,
 	}

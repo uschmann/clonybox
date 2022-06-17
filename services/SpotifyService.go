@@ -4,6 +4,7 @@ import (
 	"context"
 	"fmt"
 	"log"
+	"strings"
 
 	"github.com/zmb3/spotify/v2"
 	spotifyauth "github.com/zmb3/spotify/v2/auth"
@@ -57,4 +58,16 @@ func (s *SpotifyService) GetAuthUrl() string {
 
 func (s *SpotifyService) GetUser() (*spotify.PrivateUser, error) {
 	return s.Client.CurrentUser(context.Background())
+}
+
+func (s *SpotifyService) GetContextType(state *spotify.PlayerState) string {
+	if state.PlaybackContext.Type == "" {
+		return "track"
+	}
+
+	return state.PlaybackContext.Type
+}
+
+func (s *SpotifyService) ExtractId(uri string) string {
+	return strings.Split(uri, ":")[2]
 }
