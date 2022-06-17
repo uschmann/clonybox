@@ -12,6 +12,7 @@ func RegisterSpotifyHandler(r *gin.Engine, env *Env) {
 	group := r.Group("/api/spotify")
 	{
 		group.POST("/search", env.searchSpotify)
+		group.GET("/playback-state", env.getPlaybackState)
 	}
 }
 
@@ -24,6 +25,17 @@ func (env *Env) searchSpotify(c *gin.Context) {
 	c.BindJSON(&body)
 
 	result, err := env.SpotifyService.Client.Search(context.Background(), body.Query, spotify.SearchTypeAlbum|spotify.SearchTypePlaylist|spotify.SearchTypeTrack)
+
+	if err != nil {
+		fmt.Println(err)
+		return
+	}
+
+	c.JSON(200, result)
+}
+
+func (env *Env) getPlaybackState(c *gin.Context) {
+	result, err := env.SpotifyService.Client.PlayerState(context.Background())
 
 	if err != nil {
 		fmt.Println(err)

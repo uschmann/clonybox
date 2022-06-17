@@ -82,7 +82,7 @@ func main() {
 		Config:             config,
 	}
 
-	var rfidReader rfidreader.RfidReader = createRfIdReader(os.Getenv("RFID_TYPE")) //"/dev/input/event20"
+	var rfidReader rfidreader.RfidReader = createRfIdReader(config) //"/dev/input/event20"
 	go rfidReader.StartReading(env.RfidChannel)
 	go env.RfidObserver.Observe()
 
@@ -141,10 +141,12 @@ func main() {
 	r.Run()
 }
 
-func createRfIdReader(readerType string) rfidreader.RfidReader {
-	switch readerType {
+func createRfIdReader(config *config.Config) rfidreader.RfidReader {
+	switch config.RfidType {
 	case "evdev":
 		return rfidreader.NewEvdevRfIdReader(os.Getenv("RFID_EVDEV_FILE"))
+	case "mfrc522":
+		return rfidreader.NewMfrc522RfidReader(config.Mfrc522ResetPin, config.Mfrc522IrqPin)
 	}
 
 	return rfidreader.NewStdioRfidReader()
